@@ -40,6 +40,14 @@ AC_ARG_WITH(qmp-comms-type,
     esac],
   [QMP_COMMS_TYPE=SINGLE])
 
+AC_ARG_WITH(mpi-jm,
+  AC_HELP_STRING([--with-mpi-jm=PATH_TO_MPI_JM_ROOT],
+    [Build QMP with mpi_jm]),
+  [case "${with_qmp_comms_type}" in
+    mpi|MPI) MPI_JM="${with_mpi_jm}" ;;
+    *)       AC_MSG_ERROR([mpi_jm requires MPI.]) ;;
+    esac], [MPI_JM="NONE"] )
+
 AC_ARG_WITH( qmp-comms-cflags,
   AC_HELP_STRING([--with-qmp-comms-cflags=QMP_COMMS_CFLAGS],
     [To pass optional include path to comms header files via compiler flag
@@ -58,6 +66,8 @@ AC_ARG_WITH( qmp-comms-libs,
   [QMP_COMMS_LIBS="$with_qmp_comms_libs"])
 
 # If $QMP_COMMS_TYPE=MPI then perform the following link test
+
+
 
 case "${QMP_COMMS_TYPE}" in 
 SINGLE)
@@ -162,6 +172,18 @@ AC_ARG_ENABLE(
     #QMP_COMMS_CFLAGS="-I/bgsys/drivers/ppcfloor/spi/include $QMP_COMMS_CFLAGS"
   fi]
 )
+
+
+if test "X${MPI_JM}X" != "XNONEX"; then
+    AC_MSG_NOTICE([Configuring for MPI Jobmanager])
+    AC_DEFINE([QMP_MPI_JM],[],[Enable MPI-JM])
+    QMP_MPIJM_CFLAGS="-I${MPI_JM}/include "
+    QMP_MPIJM_LDFLAGS="-L${MPI_JM}/lib "
+    QMP_MPIJM_LIBS="-ljm_worker"
+    QMP_COMMS_CFLAGS="$QMP_MPIJM_CFLAGS $QMP_COMMS_CFLAGS"
+    QMP_COMMS_LDFLAGS="$QMP_MPIJM_LDFLAGS $QMP_COMMS_LDFLAGS"
+    QMP_COMMS_LIBS="$QMP_MPIJM_LIBS $QMP_COMMS_LIBS"
+fi
 
 AC_SUBST(QMP_COMMS_TYPE)
 AC_SUBST(QMP_COMMS_CFLAGS)
