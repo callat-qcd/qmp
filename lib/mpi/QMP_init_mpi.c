@@ -8,7 +8,7 @@
 #include "QMP_P_COMMON.h"
 
 #ifdef QMP_MPI_JM
-#include "jm_c_api.h"
+#include "jm.h"
 #endif
 
 QMP_status_t
