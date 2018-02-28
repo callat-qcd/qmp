@@ -107,7 +107,7 @@ QMP_finalize_msg_passing_mpi (void)
 {
   MPI_Finalize();
   if ( QMP_post_finalize_callback ){
-      (*QMP_post_finalize_callback)(QMP_SUCCESS, QMP_error_strings[0]);
+      (*QMP_post_finalize_callback)(QMP_SUCCESS, QMP_error_string(0));
   }
   
 }
@@ -118,6 +118,6 @@ QMP_abort_mpi (int error_code)
 {
   MPI_Abort(MPI_COMM_WORLD, error_code);
   if ( QMP_post_finalize_callback ){
-      (*QMP_post_finalize_callback)(error_code, QMP_error_strings[error_code]);
+      (*QMP_post_finalize_callback)(error_code, QMP_error_string(error_code));
   }
 }
