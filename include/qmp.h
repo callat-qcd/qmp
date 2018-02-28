@@ -257,6 +257,13 @@ extern void               QMP_abort (int error_code);
  */
 extern void               QMP_abort_string (int error_code, char *message);
 
+/**
+ * General callbacks for immediately after MPI_Init and MPI_Finalize / MPI_Abort.
+ * Added to facilitate mpi_jm integration.
+ */
+
+extern void (*QMP_post_init_callback)();
+extern void (*QMP_post_finalize_callback)(int, const char*);
 
 /***************************
  *  Communicator routines  *
