@@ -262,7 +262,7 @@ extern void               QMP_abort_string (int error_code, char *message);
  * Added to facilitate mpi_jm integration.
  */
 
-extern void (*QMP_post_init_callback)();
+extern void (*QMP_post_initialize_callback)();
 extern void (*QMP_post_finalize_callback)(int, const char*);
 
 /***************************
