@@ -45,9 +45,6 @@ QMP_init_machine_mpi (int* argc, char*** argv, QMP_thread_level_t required,
       MPI_Query_thread(&mpi_prv);
     }
 
-  if (MPI_Init_thread(argc, argv, mpi_req, &mpi_prv) != MPI_SUCCESS) 
-    QMP_abort_string (-1, "MPI_Init failed");
-  
 #ifdef QMP_MPI_JM
   jm_parent_handshake(argc, argv);
 #endif
