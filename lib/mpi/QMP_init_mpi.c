@@ -112,8 +112,11 @@ QMP_finalize_msg_passing_mpi (void)
 void 
 QMP_abort_mpi (int error_code)
 {
-  MPI_Abort(MPI_COMM_WORLD, error_code);
 #ifdef QMP_MPI_JM
   jm_finish(error_code, QMP_error_string(error_code));
+  MPI_Finalize();
+  exit(error_code);
+#else
+  MPI_Abort(MPI_COMM_WORLD, error_code);
 #endif
 }
