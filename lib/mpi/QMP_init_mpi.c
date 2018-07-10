@@ -90,9 +90,22 @@ QMP_finalize_msg_passing_mpi (void)
   MPI_Finalize();
 }
 
-
+void QMP_abort_mpi (int error_code)
+{
+#ifdef QMP_MPI_JM
+    /* try to do clean shutdown instead of ABORT */
+    /* BETTER: should really ask jm_master to kill job   */
+    jm_finish(error_code, QMP_error_string(error_code));
+    MPI_Finalize();
+    exit(error_code)
+#else
+    MPI_Abort(MPI_COMM_WORLD, error_code);
+#endif
+}
+/* Original QMP Abort call
 void 
 QMP_abort_mpi (int error_code)
 {
   MPI_Abort(MPI_COMM_WORLD, error_code);
 }
+*/
