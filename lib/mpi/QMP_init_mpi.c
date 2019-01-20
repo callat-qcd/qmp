@@ -102,14 +102,14 @@ QMP_init_machine_mpi (int* argc, char*** argv, QMP_thread_level_t required,
 void
 QMP_finalize_msg_passing_mpi (void)
 {
-  int flag;
-  MPI_Finalized(&flag);
+    int flag;
+    MPI_Finalized(&flag);
 
-  if (!flag) {
-    MPI_Finalize();
-  }
+    if (!flag) {
+        MPI_Finalize();
+    }
 #ifdef QMP_MPI_JM
-  jm_finish(0, "QMP MPI finalized.");
+    jm_finish(0, "QMP MPI finalized.");
 #endif
 }
 
