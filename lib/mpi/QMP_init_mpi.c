@@ -99,9 +99,6 @@ QMP_finalize_msg_passing_mpi (void)
   if (!flag) {
     MPI_Finalize();
   }
-#ifdef QMP_MPI_JM
-  jm_finish(0, "QMP MPI finalized.");
-#endif
 }
 
 void QMP_abort_mpi (int error_code)
