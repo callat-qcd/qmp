@@ -4,8 +4,12 @@
 #include <ctype.h>
 #include <stdarg.h>
 
+#include "qmp_config.h"
 #include "QMP_P_COMMON.h"
 
+#ifdef QMP_MPI_JM
+#include "jm_c_api.h"
+#endif
 
 QMP_status_t
 QMP_init_machine_mpi (int* argc, char*** argv, QMP_thread_level_t required,
@@ -40,6 +44,14 @@ QMP_init_machine_mpi (int* argc, char*** argv, QMP_thread_level_t required,
     }else{
       MPI_Query_thread(&mpi_prv);
     }
+
+  if (MPI_Init_thread(argc, argv, mpi_req, &mpi_prv) != MPI_SUCCESS) 
+    QMP_abort_string (-1, "MPI_Init failed");
+  
+#ifdef QMP_MPI_JM
+  jm_parent_handshake(argc, argv);
+#endif
+  
 
   switch(mpi_prv) { 
   case MPI_THREAD_SINGLE:
@@ -99,11 +111,28 @@ QMP_finalize_msg_passing_mpi (void)
   if (!flag) {
     MPI_Finalize();
   }
+#ifdef QMP_MPI_JM
+  jm_finish(0, "QMP MPI finalized.");
+#endif
 }
 
-
+void 
+QMP_abort_mpi (int error_code)
+{
+#ifdef QMP_MPI_JM
+    /* try to do clean shutdown instead of ABORT */
+    /* BETTER: should really ask jm_master to kill job   */
+    jm_finish(error_code, QMP_error_string(error_code));
+    MPI_Finalize();//this seems out of step with the change made to QMP with the &flag and finalize above
+    exit(error_code);
+#else
+    MPI_Abort(MPI_COMM_WORLD, error_code);
+#endif
+}
+/* Original QMP Abort call
 void 
 QMP_abort_mpi (int error_code)
 {
   MPI_Abort(MPI_COMM_WORLD, error_code);
 }
+*/
