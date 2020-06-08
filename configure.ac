@@ -177,7 +177,8 @@ if test "X${MPI_JM}X" != "XNONEX"; then
     AC_DEFINE([QMP_MPI_JM],[],[Enable MPI-JM])
     QMP_MPIJM_CFLAGS="-I${MPI_JM}/include "
     QMP_MPIJM_LDFLAGS="-L${MPI_JM}/lib "
-    QMP_MPIJM_LIBS="-ljm_worker"
+    # TODO: we need to add a switch in case user compiles without OMP - for now - hardwire to use OMP since that is default compilation these days
+    QMP_MPIJM_LIBS="-ljm_workeromp"
     QMP_COMMS_CFLAGS="$QMP_MPIJM_CFLAGS $QMP_COMMS_CFLAGS"
     QMP_COMMS_LDFLAGS="$QMP_MPIJM_LDFLAGS $QMP_COMMS_LDFLAGS"
     QMP_COMMS_LIBS="$QMP_MPIJM_LIBS $QMP_COMMS_LIBS"
